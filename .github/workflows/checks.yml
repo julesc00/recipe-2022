@@ -1,8 +1,7 @@
 ---
 name: Checks
 on:
-  push:
-    branch: main
+  push: [main]
 
 jobs:
   test-lint:
@@ -10,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Login into Dockerhub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -20,3 +19,6 @@ jobs:
         run: docker-compose run --rm app sh -c "python manage.py test"
       - name: Run code linting
         run: docker-compose run --rm app sh -c "flake8"
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.0
+
